@@ -18,9 +18,13 @@ There will also be labs involved for freshman/sophomore students to help them un
 
 All files provided are needed for use of the main file. The main file () is where the student will be doing some high level programming using our API (not developed yet). This API will simplify the programming allowing the student to grasp whats going on. This will lessen the learning curve allowing for growth and learning in the lab.
 
+###### Tracking API (tracking.py)
+
+
+
 ###### DOBOT API (DobotDllType.py)
 
-This will allow the user to control the Dobotw. This file should not be tampered with as this is directly from the manufacturer.
+This will allow the user to control the Dobot. This file should not be tampered with as this is directly from the manufacturer.
 
 ###### Simplify API (Not Developed Yet)
 
