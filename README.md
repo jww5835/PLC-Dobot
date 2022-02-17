@@ -19,7 +19,7 @@ There will also be labs involved for freshman/sophomore students to help them un
 All files provided are needed for use of the main file. The main file () is where the student will be doing some high level programming using our API (not developed yet). This API will simplify the programming allowing the student to grasp whats going on. This will lessen the learning curve allowing for growth and learning in the lab.
 
 ###### Tracking API (tracking.py)
-
+This will allow the user to track objects on conveyor belt. This file should not be tampered with allows the Computer Vision to function properly.
 
 
 ###### DOBOT API (DobotDllType.py)
