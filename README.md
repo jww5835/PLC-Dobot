@@ -30,6 +30,6 @@ This will allow the user to control the Dobot. This file should not be tampered 
 
 This will use object oriented programming to simplify the code and allow the student to fully understand how everything works. More info will be provided once the development stage is complete.
 
-###### Lab Files
+###### Lab Files (Not Created Yet)
 
 We will provide 2 weeks worth of labs allowing the student to enjoy, learn, and work with the full system. These labs will be our provided but there will be many variations that can be created. Whether that entails making it more complicated or just including a new aspect to the labs. These will be provided after the Simplify API is completed.
