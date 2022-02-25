@@ -11,6 +11,8 @@ import DobotDllType as dType
 import time
 from tracker import *
 
+print("Hello")
+
 def PLC_comms(block_color):
     with LogixDriver('192.168.222.51') as plc: # path to PLC and declaring it plc
         #print(plc)                             # basic plc info
