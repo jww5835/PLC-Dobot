@@ -6,10 +6,8 @@ import cv2
 import numpy as np
 import math
 from sklearn.neighbors import KNeighborsClassifier
-#from matplotlib import pyplot as plt
 import threading
 import DobotDllType as dType
-# import imutils
 import time
 from tracker import *
 
