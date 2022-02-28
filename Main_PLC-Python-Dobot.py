@@ -91,12 +91,17 @@ print("Connect status:",CON_STR[state])
 
 # Setting Dobot speeds and home coordinates
 dType.SetQueuedCmdClear(api)
-dType.SetHOMEParams(api, 200, 200, 100, 100, isQueued = 1)
+dType.SetHOMEParams(api, 228, -31, 45, 50, isQueued = 1)
 dType.SetPTPJointParams(api, 200, 200, 200, 200, 200, 200, 200, 200, isQueued = 1)
 dType.SetPTPCommonParams(api, 100, 100, isQueued = 1)
-#dType.SetHOMECmd(api, temp=0, isQueued = 1)#dType.SetQueuedCmdStartExec(api)
-pose = dType.GetPose(api)
-print(pose)
+dType.SetHOMECmd(api, temp=0, isQueued = 1)
+dType.SetQueuedCmdStartExec(api)
+time.sleep(23)
+#dType.SetQueuedCmdClear(api)
+#dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
+#dType.SetQueuedCmdStartExec(api)
+#pose = dType.GetPose(api)
+#print(pose)
 # Making sure the system is on and reading initial PLC values
 with LogixDriver('192.168.222.51') as plc:                                  #all read tags assigned
             sys_on = plc.read('Program:MainProgram.System_Running')                 #system on
@@ -115,9 +120,11 @@ tot = 0
 global rgb
 rgb = []
 count = 0
+break_shape = 0
 #detected = 1
 #dType.dSleep(10000)
-#time.sleep(22)
+
+
 # Starts the Logic Loop
 if sys_on[1] == True:
     while sys_on[1] == True:
@@ -145,14 +152,17 @@ if sys_on[1] == True:
 
 ### 1.) Conveyor runs when no block is detected and system is on
 ###     If block is detected or system is stopped conveyor stops
+
         if con_on[1] == 1:
             dType.SetQueuedCmdClear(api)
-            dType.SetEMotor(api, 1, 1, 2500, isQueued = 0)
-            #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 0)
+            #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
+            dType.SetEMotor(api, 1, 1, -2500, isQueued = 1)
             #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 200, 100, 100, 50, isQueued = 1)
             #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 250, 50, 50, 50, isQueued = 1)
             #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 200, 100, 100, 50, isQueued = 1)
+            
             dType.SetQueuedCmdStartExec(api)
+            #print(dType.GetQueuedCmdCurrentIndex(api))
 
 ### 2.) Computer Vision.
 # Create tracker object
@@ -169,7 +179,7 @@ if sys_on[1] == True:
 
 
             # Extract Region of interest
-            roi = frame[100: 225,100: 540]
+            roi = frame[100: 225,100: 440]
 
             # 1. Object Detection
             mask = object_detector.apply(roi)
@@ -180,13 +190,9 @@ if sys_on[1] == True:
                 # Calculate area and remove small elements
                 area = cv2.contourArea(cnt)
                 if area > 100:
-                    #cv2.drawContours(roi, [cnt], -1, (0, 255, 0), 2)
+                    cv2.drawContours(roi, [cnt], -1, (0, 255, 0), 2)
                     x, y, w, h = cv2.boundingRect(cnt)
-
-
                     detections.append([x, y, w, h])
-
-                    #print(x,y)
 
             # 2. Object Tracking
             boxes_ids = tracker.update(detections)
@@ -196,25 +202,39 @@ if sys_on[1] == True:
                 cv2.rectangle(roi, (x, y), (x + w, y + h), (0, 255, 0), 3)
                 if x > -1 and y > -1:
                     dType.SetEMotor(api, 1, 0, 0, isQueued = 0)
-
-                   
-                    y = y - 50
-                    print(x,y)
-                    print(x,y)
-                    #rgb = frame.getpixel((x,y))
-                    rbg = frame[x,y]
-                    print(rbg)
-
-
-            cv2.imshow("roi", roi)
+                    #dType.SetQueuedCmdClear(api)
+                    #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
+                    dType.SetQueuedCmdStartExec(api)
+                    cap.release()
+                    #destroyAllWindows
+                    #y = y - 5
+                    rgb = frame[x,y]
+                    print(rgb)
+                    #y = y + 5
+                    x = x/2.5 + 215 
+                    dType.SetQueuedCmdClear(api)
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
+                    dType.dSleep(1000)
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, 85.5, 5, 50, isQueued = 1)
+                    dType.dSleep(1000)
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.dSleep(1000)
+                    dType.SetPTPCmd(api,  dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
+                    dType.dSleep(1000)
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.dSleep(1000)
+                    dType.SetQueuedCmdStartExec(api)
+                    lastIndex = dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)[0]
+                    while lastIndex > dType.GetQueuedCmdCurrentIndex(api)[0]:
+                        dType.dSleep(100)
+                    break_shape = 1
+                    time.sleep(5)
+                    break
+            cv2.imshow("roi",roi)
             cv2.imshow("Frame", frame)
-            #cv2.imshow("Mask", mask)
-                
-            key = cv2.waitKey(30)
-            if key == 27:
+
+            if break_shape == 1:
                 break
-
-
 
 ### 3.) Machine Learning uses the pulled RGB value to detect the color of the block
         #rgb = [192, 24, 100]
@@ -328,10 +348,7 @@ if sys_on[1] == True:
         #dType.SetQueuedCmdStartExec(api)
         #block_detected = 0  #dont know if this is needed.
 
-    cap.release()
-    cv2.destroyAllWindows()
-
 else:
 ### * Sets dobot back to home when system is turned off
-    print("System is off.")
+    print("System is off")
     dType.SetHOMECmd(api, temp = 0, isQueued = 0)
