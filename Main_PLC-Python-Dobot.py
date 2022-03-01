@@ -79,32 +79,34 @@ def Machine_Learning(rgb):
     true_color = classifier.predict(unknown_color)
     return true_color
 
+
+
+# Dobot connection status
+CON_STR = {
+    dType.DobotConnect.DobotConnect_NoError:  "DobotConnect_NoError",
+    dType.DobotConnect.DobotConnect_NotFound: "DobotConnect_NotFound",
+    dType.DobotConnect.DobotConnect_Occupied: "DobotConnect_Occupied"}
+
+# Connect Dobot
+api = dType.load()
+state = dType.ConnectDobot(api, "", 115200)[0]
+print("Connect status:",CON_STR[state])
+
+# Setting Dobot speeds and home coordinates
+dType.SetQueuedCmdClear(api)
+dType.SetHOMEParams(api, 228, -31, 45, 50, isQueued = 1)
+dType.SetPTPJointParams(api, 200, 200, 200, 200, 200, 200, 200, 200, isQueued = 1)
+dType.SetPTPCommonParams(api, 100, 100, isQueued = 1)
+dType.SetHOMECmd(api, temp=0, isQueued = 1)
+dType.SetQueuedCmdStartExec(api)
+time.sleep(23)
+#dType.SetQueuedCmdClear(api)
+#dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
+#dType.SetQueuedCmdStartExec(api)
+#pose = dType.GetPose(api)
+#print(pose)
+
 while True:
-
-    # Dobot connection status
-    CON_STR = {
-        dType.DobotConnect.DobotConnect_NoError:  "DobotConnect_NoError",
-        dType.DobotConnect.DobotConnect_NotFound: "DobotConnect_NotFound",
-        dType.DobotConnect.DobotConnect_Occupied: "DobotConnect_Occupied"}
-
-    # Connect Dobot
-    api = dType.load()
-    state = dType.ConnectDobot(api, "", 115200)[0]
-    print("Connect status:",CON_STR[state])
-
-    # Setting Dobot speeds and home coordinates
-    dType.SetQueuedCmdClear(api)
-    dType.SetHOMEParams(api, 228, -31, 45, 50, isQueued = 1)
-    dType.SetPTPJointParams(api, 200, 200, 200, 200, 200, 200, 200, 200, isQueued = 1)
-    dType.SetPTPCommonParams(api, 100, 100, isQueued = 1)
-    dType.SetHOMECmd(api, temp=0, isQueued = 1)
-    dType.SetQueuedCmdStartExec(api)
-    time.sleep(23)
-    #dType.SetQueuedCmdClear(api)
-    #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
-    #dType.SetQueuedCmdStartExec(api)
-    #pose = dType.GetPose(api)
-    #print(pose)
     # Making sure the system is on and reading initial PLC values
     with LogixDriver('192.168.222.51') as plc:                                  #all read tags assigned
                 sys_on = plc.read('Program:MainProgram.System_Running')                 #system on
@@ -128,8 +130,8 @@ while True:
     #dType.dSleep(10000)
 
     # Starts the Logic Loop
-    if sys_on[1] == False:
-        while sys_on[1] == False:
+    if sys_on[1] == True:
+        while sys_on[1] == True:
             print("System is Running.")
             with LogixDriver('192.168.222.51') as plc:  
     ### *** This reads the PLC status and user inputs for sorting style
@@ -155,7 +157,7 @@ while True:
     ### 1.) Conveyor runs when no block is detected and system is on
     ###     If block is detected or system is stopped conveyor stops
 
-            if con_on[1] == 0:
+            if con_on[1] == 1:
                 dType.SetQueuedCmdClear(api)
                 #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
                 dType.SetEMotor(api, 1, 1, -2500, isQueued = 1)
@@ -226,14 +228,14 @@ while True:
                         dType.dSleep(1000)
                         dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
-                        dType.dSleep(1000)
-                        dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
-                        dType.dSleep(1000)
+                        #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
+                        #dType.dSleep(1000)
+                       # dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                        #dType.dSleep(1000)
                         dType.SetQueuedCmdStartExec(api)
                         lastIndex = dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)[0]
-                        while lastIndex > dType.GetQueuedCmdCurrentIndex(api)[0]:
-                            dType.dSleep(100)
+                        #while lastIndex > dType.GetQueuedCmdCurrentIndex(api)[0]:
+                        #    dType.dSleep(100)
                         break_shape = 1
                         time.sleep(5)
                         break
@@ -272,19 +274,14 @@ while True:
         
     ### 6.) This calls the chosen sorting method and will execute the accordingly to user wants
             if sort == 'Random':
-                break
                 dType.SetQueuedCmdClear(api) # clears anything in que
                 if tot < 4:
                     print(tot)
-                    dType.SetPTPCmd(api, 0, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
-                    dType.SetPTPCmd(api, 0, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
-                    #dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
-                    dType.SetPTPCmd(api, 0, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
-                    dType.SetPTPCmd(api, 0, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
-                    dType.SetPTPCmd(api, 0, 0, -150, -43 + (tot-1)*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, -43 + (tot-1)*27, 25, isQueued = 1) # stacking blocks location
                     dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
-                    dType.SetPTPCmd(api, 0, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
-                    dType.SetPTPCmd(api, 0, 100, -150, 30, 25, isQueued = 1)# nuetral postion
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, -150, 30, 25, isQueued = 1)# nuetral postion
                     dType.SetQueuedCmdStartExec(api)
 
                 elif tot >= 4 and tot < 8:
