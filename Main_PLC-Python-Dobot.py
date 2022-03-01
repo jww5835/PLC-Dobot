@@ -35,6 +35,7 @@ def Machine_Learning(rgb):
     unknown_color = np.array(rgb).reshape(1,-1)  
     # How many neighbors we are comparing to. This will vary our CV accuracy
     classifier = KNeighborsClassifier(n_neighbors = 23)
+    print("RGB array in ML: ", unknown_color)
     # Training our machine learning code
     learning_set = [
         [128, 0, 0],    # ***RED***
@@ -316,6 +317,7 @@ while True:
                 pass
             else:
                 dType.SetQueuedCmdClear(api) # clears anything in que
+                pass
                 if count < 4:
                     pass
                     print(count)
