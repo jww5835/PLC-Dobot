@@ -181,7 +181,7 @@ while True:
 
 
                 # Extract Region of interest
-                roi = frame[100: 110,100: 440]
+                roi = frame[100: 105,100: 440]
 
                 # 1. Object Detection
                 mask = object_detector.apply(roi)
@@ -226,7 +226,7 @@ while True:
                         dType.dSleep(1000)
                         dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api,  dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
                         dType.dSleep(1000)
                         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
                         dType.dSleep(1000)
@@ -240,7 +240,7 @@ while True:
                 cv2.imshow("roi",roi)
                 cv2.imshow("Frame", frame)
                 
-                cv2.destroyAllWindows
+                cv2.destroyAllWindows()
 
 
                 if break_shape == 1:
@@ -272,13 +272,13 @@ while True:
         
     ### 6.) This calls the chosen sorting method and will execute the accordingly to user wants
             if sort == 'Random':
-                pass
+                break
                 dType.SetQueuedCmdClear(api) # clears anything in que
                 if tot < 4:
                     print(tot)
                     dType.SetPTPCmd(api, 0, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
                     dType.SetPTPCmd(api, 0, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
-                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    #dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
                     dType.SetPTPCmd(api, 0, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
                     dType.SetPTPCmd(api, 0, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
                     dType.SetPTPCmd(api, 0, 0, -150, -43 + (tot-1)*27, 25, isQueued = 1) # stacking blocks location
@@ -311,15 +311,15 @@ while True:
                 dType.SetQueuedCmdStartExec(api)
             elif sort == 'Manual':
                 # man_sort()
-                pass
+                break
             elif sort == 'Same':
                 # same_sort()
-                pass
+                break
             else:
                 dType.SetQueuedCmdClear(api) # clears anything in que
-                pass
+                break
                 if count < 4:
-                    pass
+                    break
                     print(count)
                     dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
                     dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
