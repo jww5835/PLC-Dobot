@@ -126,10 +126,9 @@ while True:
     #detected = 1
     #dType.dSleep(10000)
 
-
     # Starts the Logic Loop
-    if sys_on[1] == True:
-        while sys_on[1] == True:
+    if sys_on[1] == False:
+        while sys_on[1] == False:
             print("System is Running.")
             with LogixDriver('192.168.222.51') as plc:  
     ### *** This reads the PLC status and user inputs for sorting style
@@ -155,7 +154,7 @@ while True:
     ### 1.) Conveyor runs when no block is detected and system is on
     ###     If block is detected or system is stopped conveyor stops
 
-            if con_on[1] == 1:
+            if con_on[1] == 0:
                 dType.SetQueuedCmdClear(api)
                 #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
                 dType.SetEMotor(api, 1, 1, -2500, isQueued = 1)
@@ -181,7 +180,7 @@ while True:
 
 
                 # Extract Region of interest
-                roi = frame[100: 225,100: 440]
+                roi = frame[100: 110,100: 440]
 
                 # 1. Object Detection
                 mask = object_detector.apply(roi)
@@ -208,12 +207,17 @@ while True:
                         #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
                         dType.SetQueuedCmdStartExec(api)
                         cap.release()
-                        #destroyAllWindows
-                        #y = y - 5
-                        rgb = frame[x,y]
+                        
+                        print(x,y)
+                        x2 = x + 100
+                        y2 = 40
+                        print(x2,y2) 
+                        cv2.circle(frame, (x2, y2) , 4, (255, 0, 0), -1)
+                        
+                        rgb = frame[x2,y2]
                         print(rgb)
                         #y = y + 5
-                        x = x/2.5 + 215 
+                        x = x/2.6 + 215 
                         dType.SetQueuedCmdClear(api)
                         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
                         dType.dSleep(1000)
@@ -234,6 +238,9 @@ while True:
                         break
                 cv2.imshow("roi",roi)
                 cv2.imshow("Frame", frame)
+                
+                cv2.destroyAllWindows
+
 
                 if break_shape == 1:
                     break
@@ -264,6 +271,7 @@ while True:
         
     ### 6.) This calls the chosen sorting method and will execute the accordingly to user wants
             if sort == 'Random':
+                pass
                 dType.SetQueuedCmdClear(api) # clears anything in que
                 if tot < 4:
                     print(tot)
@@ -309,6 +317,7 @@ while True:
             else:
                 dType.SetQueuedCmdClear(api) # clears anything in que
                 if count < 4:
+                    pass
                     print(count)
                     dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
                     dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
