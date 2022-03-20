@@ -1,9 +1,3 @@
-from itertools import count
-from turtle import Turtle
-import pycomm3
-from pycomm3 import LogixDriver
-import cv2
-import numpy as np
 import math
 from sklearn.neighbors import KNeighborsClassifier
 #from matplotlib import pyplot as plt
@@ -34,7 +28,7 @@ def Machine_Learning(rgb):
     # Creating an array that works with the machine learning format
     unknown_color = np.array(rgb).reshape(1,-1)  
     # How many neighbors we are comparing to. This will vary our CV accuracy
-    classifier = KNeighborsClassifier(n_neighbors = 23)
+    classifier = KNeighborsClassifier(n_neighbors = 5)
     print("RGB array in ML: ", unknown_color)
     # Training our machine learning code
     learning_set = [
@@ -45,7 +39,11 @@ def Machine_Learning(rgb):
         [220, 20, 60],
         [255, 0, 0],
         [255, 99, 71],
-        [255, 69, 0],   # ***RED***
+        [255, 69, 0],
+        [255, 130, 92],
+        [255, 147, 115],
+        [237, 151, 126],
+        [245, 169, 147],# ***RED***
         [85, 107, 47],  # ***GREEN***
         [107, 142, 35],
         [124, 252, 0],
@@ -53,7 +51,11 @@ def Machine_Learning(rgb):
         [0, 100, 0],
         [0, 128, 0],
         [34, 139, 34],
-        [0, 255, 0],    # ***GREEN***
+        [0, 255, 0],    
+        [213, 255, 145],
+        [200, 247, 124],
+        [186, 230, 115],
+        [198, 247, 119],# ***GREEN***
         [255, 255, 0],  # ***YELLOW***
         [204, 204, 0],
         [255, 255, 51],
@@ -61,7 +63,11 @@ def Machine_Learning(rgb):
         [255, 255, 153],
         [255, 255, 204],
         [240, 240, 15],
-        [245, 249, 33], # ***YELLOW***
+        [245, 249, 33],
+        [247, 247, 134],
+        [243, 250, 150],
+        [252, 255, 173],
+        [253, 255, 189],# ***YELLOW***
         [0, 0, 255],    # ***BLUE***
         [0, 0, 205],
         [0, 0, 139],
@@ -69,7 +75,11 @@ def Machine_Learning(rgb):
         [135, 206, 235],
         [30, 144, 255],
         [18, 48, 165],
-        [65, 105, 225]  # ***BLUE***
+        [65, 105, 225],  
+        [66, 209, 245],
+        [66, 236, 245],
+        [66, 245, 242],
+        [101, 252, 250], # ***BLUE***
         ]
     # This allows us to label each RGB value above
     label_set = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B']
@@ -159,7 +169,7 @@ while True:
     ### 1.) Conveyor runs when no block is detected and system is on
     ###     If block is detected or system is stopped conveyor stops
 
-            cap = cv2.VideoCapture(0)
+            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
             while(True):
                 ret, frame = cap.read()                 # Capture the video frame by frame
                 cv2.imshow('Camera', frame)             # Display the resulting frame
@@ -173,17 +183,15 @@ while True:
     # Create tracker object
             tracker = EuclideanDistTracker()
 
-            #cap = cv2.VideoCapture(0)
-
             # Object detection from Stable camera
-            object_detector = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=150)
+            object_detector = cv2.createBackgroundSubtractorMOG2(history=225, varThreshold=55)
 
             while True:
                 ret, frame = cap.read()
                 height, width, _ = frame.shape
 
                 # Extract Region of interest
-                roi = frame[100: 105,100: 440]
+                roi = frame[395: 500,100: 440]
          
                 # 1. Object Detection
                 mask = object_detector.apply(roi)
@@ -212,23 +220,24 @@ while True:
                         cap.release()
                         
                         print(x,y)
-                        x2 = x + 100
-                        y2 = 40
-                        print(x2,y2) 
-                        cv2.circle(frame, (x2, y2) , 4, (255, 0, 0), -1)
+                        x2 = x + 120
+                        y2 = 350
                         
-                        rgb = frame[x2,y2]
+                        
+                        bgr = frame[x2,y2]
+                        rgb = bgr[::-1]
                         print(rgb)
-                        #y = y + 5
-                        x = x/2.61 + 215 
+                      
+                        x = x/3.08 + 200
+                        print(x,y)
                         dType.SetQueuedCmdClear(api)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 45, 100, 50, isQueued = 1)
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, 85.5, 5, 50, isQueued = 1)
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, 45, 5, 50, isQueued = 1)
                         dType.dSleep(1000)
                         dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode,  273, 85.5, 50, 50, isQueued = 1)    # lifts straight up
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode,  273, 45, 50, 50, isQueued = 1)    # lifts straight up
                         dType.dSleep(1000)
                        # dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
                         #dType.dSleep(1000)
