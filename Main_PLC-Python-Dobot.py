@@ -1,3 +1,9 @@
+from itertools import count
+from turtle import Turtle
+import pycomm3
+from pycomm3 import LogixDriver
+import cv2
+import numpy as np
 import math
 from sklearn.neighbors import KNeighborsClassifier
 #from matplotlib import pyplot as plt
@@ -6,6 +12,7 @@ import DobotDllType as dType
 # import imutils
 import time
 from tracker import *
+import pandas as pd
 
 def PLC_comms(block_color):
     with LogixDriver('192.168.222.51') as plc: # path to PLC and declaring it plc
@@ -24,67 +31,58 @@ def PLC_comms(block_color):
     return
 
 def Machine_Learning(rgb):
+    
+
+    df = pd.read_excel("ML_CSV.xlsx")
+    dft = pd.read_excel("ML_CSV_TEST.xlsx")
+
+    X_train = df.iloc[:, :-1].values
+    y_train = df.iloc[:, 3].values
 
     # Creating an array that works with the machine learning format
     unknown_color = np.array(rgb).reshape(1,-1)  
     # How many neighbors we are comparing to. This will vary our CV accuracy
-    classifier = KNeighborsClassifier(n_neighbors = 5)
+    classifier = KNeighborsClassifier(n_neighbors = 12)
     print("RGB array in ML: ", unknown_color)
     # Training our machine learning code
-    learning_set = [
-        [128, 0, 0],    # ***RED***
-        [139, 0, 0],
-        [165, 42, 42],
-        [178, 34, 34],
-        [220, 20, 60],
-        [255, 0, 0],
-        [255, 99, 71],
-        [255, 69, 0],
-        [255, 130, 92],
-        [255, 147, 115],
-        [237, 151, 126],
-        [245, 169, 147],# ***RED***
-        [85, 107, 47],  # ***GREEN***
-        [107, 142, 35],
-        [124, 252, 0],
-        [127, 255, 0],
-        [0, 100, 0],
-        [0, 128, 0],
-        [34, 139, 34],
-        [0, 255, 0],    
-        [213, 255, 145],
-        [200, 247, 124],
-        [186, 230, 115],
-        [198, 247, 119],# ***GREEN***
-        [255, 255, 0],  # ***YELLOW***
-        [204, 204, 0],
-        [255, 255, 51],
-        [255, 255, 102],
-        [255, 255, 153],
-        [255, 255, 204],
-        [240, 240, 15],
-        [245, 249, 33],
-        [247, 247, 134],
-        [243, 250, 150],
-        [252, 255, 173],
-        [253, 255, 189],# ***YELLOW***
-        [0, 0, 255],    # ***BLUE***
-        [0, 0, 205],
-        [0, 0, 139],
-        [135, 206, 250],
-        [135, 206, 235],
-        [30, 144, 255],
-        [18, 48, 165],
-        [65, 105, 225],  
-        [66, 209, 245],
-        [66, 236, 245],
-        [66, 245, 242],
-        [101, 252, 250], # ***BLUE***
-        ]
+    #learning_set = [
+    #    [128, 0, 0],    # ***RED***
+    #    [139, 0, 0],
+    #    [165, 42, 42],
+    #    [178, 34, 34],
+    #    [220, 20, 60],
+    #    [255, 0, 0],
+    #    [255, 99, 71],
+    #    [255, 69, 0],   # ***RED***
+    #    [85, 107, 47],  # ***GREEN***
+    #    [107, 142, 35],
+    #    [124, 252, 0],
+    #    [127, 255, 0],
+    #    [0, 100, 0],
+    #    [0, 128, 0],
+    #    [34, 139, 34],
+    #    [0, 255, 0],    # ***GREEN***
+    #    [255, 255, 0],  # ***YELLOW***
+    #    [204, 204, 0],
+    #    [255, 255, 51],
+    #    [255, 255, 102],
+    #    [255, 255, 153],
+    #    [255, 255, 204],
+    #    [240, 240, 15],
+    #    [245, 249, 33], # ***YELLOW***
+    #    [0, 0, 255],    # ***BLUE***
+    #    [0, 0, 205],
+    #    [0, 0, 139],
+    #    [135, 206, 250],
+    #    [135, 206, 235],
+    #    [30, 144, 255],
+    #    [18, 48, 165],
+    #    [65, 105, 225]  # ***BLUE***
+    #    ]
     # This allows us to label each RGB value above
-    label_set = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B']
+    #label_set = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B']
     # Combines and labels the data
-    classifier.fit(learning_set, label_set)
+    classifier.fit(X_train, y_train)
     # Predicts the true color based on the K value chosen above as well as Euclidean Distance
     true_color = classifier.predict(unknown_color)
     return true_color
@@ -116,6 +114,12 @@ time.sleep(23)
 #pose = dType.GetPose(api)
 #print(pose)
 
+df = pd.read_excel("ML_CSV.xlsx")
+dft = pd.read_excel("ML_CSV_TEST.xlsx")
+
+X_train = df.iloc[:, :-1].values
+y_train = df.iloc[:, 3].values
+
 while True:
     # Making sure the system is on and reading initial PLC values
     with LogixDriver('192.168.222.51') as plc:                                  #all read tags assigned
@@ -142,8 +146,6 @@ while True:
     # Starts the Logic Loop
     if sys_on[1] == True:
         while sys_on[1] == True:
-            break_shape = 0
-            dType.SetQueuedCmdClear(api)
             print("System is Running.")
             with LogixDriver('192.168.222.51') as plc:  
     ### *** This reads the PLC status and user inputs for sorting style
@@ -169,30 +171,34 @@ while True:
     ### 1.) Conveyor runs when no block is detected and system is on
     ###     If block is detected or system is stopped conveyor stops
 
-            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-            while(True):
-                ret, frame = cap.read()                 # Capture the video frame by frame
-                cv2.imshow('Camera', frame)             # Display the resulting frame
-                break
             if con_on[1] == 1:
                 dType.SetQueuedCmdClear(api)
-                dType.SetEMotor(api, 1, 1, -2500, isQueued = 1)            
+                #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
+                dType.SetEMotor(api, 1, 1, -2500, isQueued = 1)
+                #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 200, 100, 100, 50, isQueued = 1)
+                #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 250, 50, 50, 50, isQueued = 1)
+                #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 200, 100, 100, 50, isQueued = 1)
+            
                 dType.SetQueuedCmdStartExec(api)
+                #print(dType.GetQueuedCmdCurrentIndex(api))
 
     ### 2.) Computer Vision.
     # Create tracker object
             tracker = EuclideanDistTracker()
 
+            cap = cv2.VideoCapture(0)
+
             # Object detection from Stable camera
-            object_detector = cv2.createBackgroundSubtractorMOG2(history=225, varThreshold=55)
+            object_detector = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=40)
 
             while True:
                 ret, frame = cap.read()
                 height, width, _ = frame.shape
 
+
                 # Extract Region of interest
-                roi = frame[395: 500,100: 440]
-         
+                roi = frame[100: 105,100: 440]
+
                 # 1. Object Detection
                 mask = object_detector.apply(roi)
                 _, mask = cv2.threshold(mask, 254, 255, cv2.THRESH_BINARY)
@@ -220,38 +226,38 @@ while True:
                         cap.release()
                         
                         print(x,y)
-                        x2 = x + 120
-                        y2 = 350
+                        x2 = x + 100
+                        y2 = 40
+                        print(x2,y2) 
+                        cv2.circle(frame, (x2, y2) , 4, (255, 0, 0), -1)
                         
-                        
-                        bgr = frame[x2,y2]
-                        rgb = bgr[::-1]
+                        rgb = frame[x2,y2]
                         print(rgb)
-                      
-                        x = x/3.08 + 200
-                        print(x,y)
+                        #y = y + 5
+                        x = x/2.6 + 215 
                         dType.SetQueuedCmdClear(api)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 45, 100, 50, isQueued = 1)
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, 45, 5, 50, isQueued = 1)
+                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, 85.5, 5, 50, isQueued = 1)
                         dType.dSleep(1000)
                         dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
                         dType.dSleep(1000)
-                        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode,  273, 45, 50, 50, isQueued = 1)    # lifts straight up
-                        dType.dSleep(1000)
+                        #dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 210, -50, 50, 50, isQueued = 1)    # lifts straight up
+                        #dType.dSleep(1000)
                        # dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
                         #dType.dSleep(1000)
                         dType.SetQueuedCmdStartExec(api)
-                        #lastIndex = dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)[0]
+                        lastIndex = dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)[0]
                         #while lastIndex > dType.GetQueuedCmdCurrentIndex(api)[0]:
                         #    dType.dSleep(100)
                         break_shape = 1
                         time.sleep(5)
-                        #break
-
+                        break
                 cv2.imshow("roi",roi)
                 cv2.imshow("Frame", frame)
+                
                 cv2.destroyAllWindows()
+
 
                 if break_shape == 1:
                     break
@@ -283,27 +289,36 @@ while True:
     ### 6.) This calls the chosen sorting method and will execute the accordingly to user wants
             if sort == 'Random':
                 dType.SetQueuedCmdClear(api) # clears anything in que
-                if tot < 5:
-
-                    print("Total Blocks Stacked: ", tot)
-                    print("Total block stack: ", (tot-1)*27)
-                    z = -50 + (tot-1)*24
-                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 72, 212, 100, 0, isQueued = 1)  # Home-esk position
-                    dType.dSleep(1000)
-                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 72, 212, z, 25, isQueued = 1) # stacking blocks location
-                    dType.dSleep(1000)
+                if tot < 4:
+                    print(tot)
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, -43 + (tot-1)*27, 25, isQueued = 1) # stacking blocks location
                     dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
-                    dType.dSleep(1000)
-                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 72, 212, 100, 0, isQueued = 1)  # lifts straight up
-                    dType.dSleep(1000)
-                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 273, 85.5, 100, 50, isQueued = 1)# nuetral postion
-                    dType.dSleep(1000)
-                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 228, -31, 45, 50, isQueued = 1)
-                    dType.dSleep(5000)
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, -150, 30, 25, isQueued = 1)# nuetral postion
                     dType.SetQueuedCmdStartExec(api)
 
+                elif tot >= 4 and tot < 8:
+                    dType.SetPTPCmd(api, 0, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
+                    dType.SetPTPCmd(api, 0, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.SetPTPCmd(api, 1, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
+                    dType.SetPTPCmd(api, 1, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, 1, 0, -130, -43 + tot*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.SetPTPCmd(api, 1, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, 1, 100, -150, 30, 25, isQueued = 1)# nuetral postion
+
                 elif tot >= 8 and tot < 12:
-                    pass
+                    dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
+                    dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.SetPTPCmd(api, 1, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
+                    dType.SetPTPCmd(api, 1, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, 1, 0, -110, -43 + tot*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.SetPTPCmd(api, 1, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, 1, 100, -150, 30, 25, isQueued = 1)# nuetral postion
                 dType.SetQueuedCmdStartExec(api)
             elif sort == 'Manual':
                 # man_sort()
@@ -317,6 +332,38 @@ while True:
                 if count < 4:
                     break
                     print(count)
+                    dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
+                    dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.SetPTPCmd(api, 1, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
+                    dType.SetPTPCmd(api, 1, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, 1, 0, -150, -43 + (count-1)*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.SetPTPCmd(api, 1, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, 1, 100, -150, 30, 25, isQueued = 1)# nuetral postion
+                    dType.SetQueuedCmdStartExec(api)
+
+                elif count >= 4 and count < 8:
+                    dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
+                    dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.SetPTPCmd(api, 1, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
+                    dType.SetPTPCmd(api, 1, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, 1, 0, -130, -43 + count*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.SetPTPCmd(api, 1, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, 1, 100, -150, 30, 25, isQueued = 1)# nuetral postion
+
+                elif count >= 8 and count < 12:
+                    dType.SetPTPCmd(api, 1, 100, 0, 25, 0, isQueued = 1)    # on top of conveyor block
+                    dType.SetPTPCmd(api, 1, 100, 0, 14, 0, isQueued = 1)    # 13 Z is ideal for conveyor pick up
+                    dType.SetEndEffectorSuctionCup(api, 1, 1, isQueued = 1) # suction on
+                    dType.SetPTPCmd(api, 1, 100, 0, 30, 0, isQueued = 1)    # lifts straight up
+                    dType.SetPTPCmd(api, 1, 0, -150, 13, 25, isQueued = 1)  # Home-esk position
+                    dType.SetPTPCmd(api, 1, 0, -110, -43 + count*27, 25, isQueued = 1) # stacking blocks location
+                    dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1) # suction off
+                    dType.SetPTPCmd(api, 1, 0, -150, 50, 25, isQueued = 1)  # lifts straight up
+                    dType.SetPTPCmd(api, 1, 100, -150, 30, 25, isQueued = 1)# nuetral postion
 
                 dType.SetQueuedCmdStartExec(api)
 
@@ -328,5 +375,5 @@ while True:
     else:
     ### * Sets dobot back to home when system is turned off
         print("System is off")
-        #dType.SetHOMECmd(api, temp = 0, isQueued = 0)
+        dType.SetHOMECmd(api, temp = 0, isQueued = 0)
         time.sleep(5)
