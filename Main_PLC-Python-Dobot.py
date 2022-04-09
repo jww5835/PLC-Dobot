@@ -14,21 +14,21 @@ import time
 from tracker import *
 
 
-def PLC_comms(block_color):
-    with LogixDriver('192.168.222.51') as plc: # path to PLC and declaring it plc
-        print(plc)                             # basic plc info
+#def PLC_comms(block_color):
+#    with LogixDriver('192.168.222.51') as plc: # path to PLC and declaring it plc
+#        print(plc)                             # basic plc info
          
-        #Depending on the users sorting method chosen from the PLC. This will determine
-        #where the block goes
-        if block_color == "Red":
-            plc.write('Program:MainProgram.Red_Py', 1)# Setting color to 1 in PLC
-        elif block_color == "Green":
-            plc.write('Program:MainProgram.Green_Py', 2)# Setting color to 2 in PLC
-        elif block_color == "Yellow":
-            plc.write('Program:MainProgram.Yellow_Py', 3)# Setting color to 3 in PLC
-        elif block_color == "Blue":
-            plc.write('Program:MainProgram.Blue_Py', 4)# Setting color to 4 in PLC
-    return
+#        #Depending on the users sorting method chosen from the PLC. This will determine
+#        #where the block goes
+#        if block_color == "Red":
+#            plc.write('Program:MainProgram.Red_Py', 1)# Setting color to 1 in PLC
+#        elif block_color == "Green":
+#            plc.write('Program:MainProgram.Green_Py', 2)# Setting color to 2 in PLC
+#        elif block_color == "Yellow":
+#            plc.write('Program:MainProgram.Yellow_Py', 3)# Setting color to 3 in PLC
+#        elif block_color == "Blue":
+#            plc.write('Program:MainProgram.Blue_Py', 4)# Setting color to 4 in PLC
+#    return
 
 def Machine_Learning(rgb):
     
@@ -118,14 +118,10 @@ y_train = df.iloc[:, 3].values
 
      #Making sure the system is on and reading initial PLC values
 with LogixDriver('192.168.222.51') as plc:                                  #all read tags assigned
-    sys_on = plc.read('Program:MainProgram.System_Running')                 #system on
+    PLC_SysRunning = plc.read('Program:MainProgram.System_Running')                 #system on
     sort_style = plc.read('Program:MainProgram.Sorting')                    #sorting style
     con_on = plc.read('Program:MainProgram.Conv_Run')
     dob_run = plc.read('Program:MainProgram.Dobot_Run')
-    print(sys_on)
-    print(sort_style)
-    print(con_on)
-    print(dob_run)
     red = 0 
     green = 0
     blue = 0
@@ -137,7 +133,7 @@ with LogixDriver('192.168.222.51') as plc:                                  #all
     break_shape = 0
 
     # Starts the Logic Loop
-    while True:
+    while PLC_SysRunning[1] == 1:
 
 
         print("System is Running.")
