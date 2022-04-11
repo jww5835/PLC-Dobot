@@ -83,73 +83,18 @@ import pandas as pd
 ####################################################################################################################################
 
 def Random_Sort(count):
-    if count < 7:
-        dType.SetQueuedCmdClear(api)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 250, 100, 50, isQueued = 1)#Goes over drop off location
+    print("Inside Random. Count: ", count)
+    count = 5
+    if count < 5:
+        #dType.SetQueuedCmdClear(api
+        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 250, 150, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 250, -48 + count*25, 50, isQueued = 1)#Drops Block off
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 250, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
-        dType.SetQueuedCmdStartExec(api)
-        if PLC_EStop[1] == 1:
-            dType.SetQueuedCmdForceStopExec(api)
-        elif PLC_Stop[1] == 1:
-            dType.SetQueuedCmdStopExec(api)
-        else:
-            pass
-        count += 1
-    elif count >= 7 & count < 14:
-        dType.SetQueuedCmdClear(api)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 250, 100, 50, isQueued = 1)#Goes over drop off location
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 250, -48 + (count-7)*25, 50, isQueued = 1)#Drops Block off
-        dType.dSleep(2000)
-        dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 250, 150, 50, isQueued = 1)#lifts straight up
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
-        dType.SetQueuedCmdStartExec(api)
-        if PLC_EStop[1] == 1:
-            dType.SetQueuedCmdForceStopExec(api)
-        elif PLC_Stop[1] == 1:
-            dType.SetQueuedCmdStopExec(api)
-        else:
-            pass
-        count += 1
-    elif count >= 14 & count < 21:
-        dType.SetQueuedCmdClear(api)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 250, 100, 50, isQueued = 1)#Goes over drop off location
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 250, -48 + (count-14)*25, 50, isQueued = 1)#Drops Block off
-        dType.dSleep(2000)
-        dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 250, 150, 50, isQueued = 1)#lifts straight up
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
-        dType.SetQueuedCmdStartExec(api)
-        if PLC_EStop[1] == 1:
-            dType.SetQueuedCmdForceStopExec(api)
-        elif PLC_Stop[1] == 1:
-            dType.SetQueuedCmdStopExec(api)
-        else:
-            pass
-        count += 1
-    elif count >= 21 & count < 28:
-        dType.SetQueuedCmdClear(api)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 250, 100, 50, isQueued = 1)#Goes over drop off location
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 250, -48 + (count-21)*25, 50, isQueued = 1)#Drops Block off
-        dType.dSleep(2000)
-        dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 250, 150, 50, isQueued = 1)#lifts straight up
-        dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
         dType.dSleep(3000)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
@@ -161,30 +106,33 @@ def Random_Sort(count):
         count += 1
     else:
         dType.SetQueuedCmdClear(api)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, -125, -250, 100, 50, isQueued = 1)#Goes over drop off location
+        dType.SetPTPCmd(api, 0, 50, -250, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.SetPTPCmd(api,0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
         dType.dSleep(3000)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
         else:
             pass
+    return count
 
 def Same_Sort(color, rc, gc, bc, yc):
-    if color == 'Red' & rc < 7:
+    if (color == 'Red') & (rc < 7):
+        print("Gang2: inside function")
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 225, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 225, -48 + redcount*25, 50, isQueued = 1)#Drops Block off
+        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 225, -48 + rc*25, 50, isQueued = 1)#Drops Block off
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 225, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
         dType.dSleep(3000)
         dType.SetQueuedCmdStartExec(api)
+        plc.write('Program:MainProgram.Block_Detected', 1)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
         elif PLC_Stop[1] == 1:
@@ -192,11 +140,11 @@ def Same_Sort(color, rc, gc, bc, yc):
         else:
             pass
         rc += 1
-    elif color == 'Green' & gc < 7:
+    elif (color == 'Green') & (gc < 7):
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 225, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 225, -48 + redcount*25, 50, isQueued = 1)#Drops Block off
+        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 225, -48 + gc*25, 50, isQueued = 1)#Drops Block off
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 225, 150, 50, isQueued = 1)#lifts straight up
@@ -211,11 +159,11 @@ def Same_Sort(color, rc, gc, bc, yc):
         else:
             pass
         gc += 1
-    elif color == 'Blue' & bc < 7:
+    elif (color == 'Blue') & (bc < 7):
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 225, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 225, -48 + redcount*25, 50, isQueued = 1)#Drops Block off
+        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 225, -48 + bc*25, 50, isQueued = 1)#Drops Block off
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 225, 150, 50, isQueued = 1)#lifts straight up
@@ -230,11 +178,11 @@ def Same_Sort(color, rc, gc, bc, yc):
         else:
             pass
         bc += 1
-    elif color == 'Yellow' & yc < 7:
+    elif (color == 'Yellow') & (yc < 7):
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 225, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
-        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 225, -48 + redcount*25, 50, isQueued = 1)#Drops Block off
+        dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 225, -48 + yc*25, 50, isQueued = 1)#Drops Block off
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 225, 150, 50, isQueued = 1)#lifts straight up
@@ -293,7 +241,7 @@ def Array_Sort(CA, CA_Count, color):
         else:
             pass
         CA_Count += 1
-    elif: CA[CA_Count] == color & 7 <= CA_Count < 14:
+    elif CA[CA_Count] == color & 7 <= CA_Count < 14:
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 75, 200, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
@@ -312,7 +260,7 @@ def Array_Sort(CA, CA_Count, color):
         else:
             pass
         CA_Count += 1
-    elif: CA[CA_Count] == color & 14 <= CA_Count < 21:
+    elif CA[CA_Count] == color & 14 <= CA_Count < 21:
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 100, 200, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
@@ -331,7 +279,7 @@ def Array_Sort(CA, CA_Count, color):
         else:
             pass
         CA_Count += 1
-    elif: CA[CA_Count] == color & 21 <= CA_Count < 28:
+    elif CA[CA_Count] == color & 21 <= CA_Count < 28:
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 200, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
@@ -488,7 +436,7 @@ dType.SetPTPJointParams(api, 200, 200, 200, 200, 200, 200, 200, 200, isQueued = 
 dType.SetPTPCommonParams(api, 100, 100, isQueued = 1)
 dType.SetHOMECmd(api, temp=0, isQueued = 1)
 dType.SetQueuedCmdStartExec(api)
-time.sleep(23)
+time.sleep(24)
 
 #df = pd.read_excel("ML_CSV.xlsx")
 #dft = pd.read_excel("ML_CSV_TEST.xlsx")
@@ -516,18 +464,18 @@ while True:
             Sort_Same = plc.read('Program:MainProgram.Same')
             Sort_Array = plc.read('Program:MainProgram.Array')
             PLC_Conveyor_Speed = plc.read('Program:MainProgram.Conv_Speed')
+            plc.write('Program:MainProgram.Block_Detected', 0)
 
             # Initalize counter blocks
             Block_Count = 0
             break_shape = 0
             start = 1
-            Block_Color == 'NULL'
+            Block_Color = 'NULL'
             red_count = 0
             green_count = 0
             blue_count = 0
             yellow_count = 0
             Array_Count = 0
-            Manual_Count = 0
 
 ####################################################################################################################################
 #
@@ -538,6 +486,7 @@ while True:
             while PLC_SysRunning[1] == 1:
                 print("System is Running.")
                 # Reread PLC Inputs for Updates
+                plc.write('Program:MainProgram.Block_Detected', 0)
                 PLC_SysRunning = plc.read('Program:MainProgram.System_Running')               
                 PLC_Stop = plc.read('Program:MainProgram.Stop')                    
                 PLC_EStop = plc.read('Program:MainProgram.ESTOP')
@@ -550,6 +499,7 @@ while True:
                 Sort_Same = plc.read('Program:MainProgram.Same')
                 Sort_Array = plc.read('Program:MainProgram.Array')
                 PLC_Conveyor_Speed = plc.read('Program:MainProgram.Conv_Speed')
+                #plc.write('Program:MainProgram.Block_Detected', 0)
 
 
         
@@ -563,17 +513,16 @@ while True:
 ####################################################################################################################################
 
                 if PLC_Conveyor[1] == 1:
-                    dType.SetQueuedCmdClear(api)
-                    dType.SetEMotor(api, 1, 1, -(PLC_Conveyor_Speed[1]), isQueued = 0)   
-                elif PLC_Conveyor[1] == 0:
-                    dType.SetEMotor(api, 1, 0, 0, isQueued = 0) 
+                   # dType.SetQueuedCmdClear(api)
+                    dType.SetEMotor(api, 1, 1, -(PLC_Conveyor_Speed[1]), isQueued = 0)
+                   # dType.SetQueuedCmdStartExec(api)
 
 ####################################################################################################################################
 #
 #   Start of the Computer Vision While loop
 #
 ####################################################################################################################################
-                while True:
+                while break_shape == 0:
                     if start == 1:
                         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
                         start = 0
@@ -677,8 +626,9 @@ while True:
                         print(x,y)
                         plc.write('Program:MainProgram.Block_Detected', 1)
                         #Might not need conveyor dType Syntax
-                        #dType.SetEMotor(api, 1, 0, -5000, isQueued = 1) 
                         dType.SetQueuedCmdClear(api)
+                        dType.SetEMotor(api, 1, 0, 0, isQueued = 0) 
+                        ##dType.SetQueuedCmdStartExec(api)
                         
                         #Might not need rgb code due to ML Pull
                         #x1 = x
@@ -705,9 +655,8 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                         elif 150 < x < 240:
                             cap.release()
                             cv2.destroyAllWindows()
@@ -725,9 +674,8 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                         elif 240 < x < 300:
                             cap.release()
                             cv2.destroyAllWindows()
@@ -745,9 +693,8 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                         elif 300 < x < 350:
                             cap.release()
                             cv2.destroyAllWindows()
@@ -765,9 +712,8 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                         elif 350 < x < 405:
                             cap.release()
                             cv2.destroyAllWindows()
@@ -785,9 +731,8 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                         elif x > 405:
                             cap.release()
                             cv2.destroyAllWindows()
@@ -805,15 +750,14 @@ while True:
                                 dType.SetQueuedCmdStartExec(api)
                             else:
                                 dType.SetQueuedCmdStopExec(api)
-                            Block_Count +=1
                             break_shape = 1
-                            plc.write('Program:MainProgram.Block_Detected', 0)
+                            #plc.write('Program:MainProgram.Block_Detected', 0)
                  
-                        if break_shape == 1:
-                            start = 1
-                            break
+                        #if break_shape == 1:
+                        #    start = 1
+                        #    break
                 break_shape = 0
-
+                start = 1
                 ### 3.) Machine Learning uses the pulled RGB value to detect the color of the block
                         #rgb = [192, 24, 100]
                 #if len(rgb) == 0:
@@ -828,10 +772,13 @@ while True:
 #   Sorting method executed based on PLC
 #
 ####################################################################################################################################
-
+                #print("Sort Manual: " + string(Sort_Manual[1]))
+                #print("Sort Same: " + Sort_Same[1])
+                #print("Sort Array: " + Sort_Array[1])
+                #print("Sort Random: " + Sort_Random[1])
                 if Sort_Manual[1] == 1:
                     Manual_Count = Manual_Sort(Manual_Count, Block_Color, Manual_Color)
-                elif Sort_Some[1] == 1
+                elif Sort_Same[1] == 1:
                     red_count, green_count, blue_count, yellow_count = Same_Sort(Block_Color, red_count, green_count, blue_count, yellow_count)
                 elif Sort_Array[1] == 1:
                     Array_Count = Array_Sort(PLC_Color_Array,Array_Count,Block_Color)
