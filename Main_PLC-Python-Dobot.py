@@ -10,26 +10,22 @@ from pycomm3 import LogixDriver
 import cv2
 import numpy as np
 import math
-from sklearn.neighbors import KNeighborsClassifier
-#from matplotlib import pyplot as plt
 import threading
 import DobotDllType as dType
-# import imutils
 import time
 from tracker import *
 import pandas as pd
 
 ####################################################################################################################################
 #
-#   Functions for Sorting Methods and PLC tag Reading
+#   Functions for Sorting Methods, Conveyor Speed, and PLC Tag Reading
 #
 ####################################################################################################################################
 
 def Random_Sort(count):
     print("Inside Random. Count: ", count)
-
+    PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
     if count < 5:
-        plc.write('Program:MainProgram.Block_Count', count)
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 250, 150, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
@@ -59,11 +55,14 @@ def Random_Sort(count):
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
+        elif PLC_Stop[1] == 1:
+            dType.SetQueuedCmdStopExec(api)
         else:
             pass
     return count
 
 def Same_Sort(color, rc, gc, bc, yc):
+    PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
     if (color == 'Red') & (rc < 5):
         print("Gang2: inside function")
         dType.SetQueuedCmdClear(api)
@@ -75,7 +74,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 90, 90, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         plc.write('Program:MainProgram.Block_Detected', 1)
         if PLC_EStop[1] == 1:
@@ -95,7 +94,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 140, 140, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -114,7 +113,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 190, 190, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -133,7 +132,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 90, 225, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -148,6 +147,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -156,7 +156,7 @@ def Same_Sort(color, rc, gc, bc, yc):
         else:
             pass
     count=[rc,gc,bc,yc]
-    count=sort(count)
+    count.sort()
     plc.write('Program:MainProgram.Block_Count', count[0])
     if rc >= 7:
         print("Maxed Out Red")
@@ -169,6 +169,7 @@ def Same_Sort(color, rc, gc, bc, yc):
     return rc, gc, bc, yc
 
 def Array_Sort(CA, CA_Count, color):
+    PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
     if color == 'Red':
         color='R'
     elif color == 'Green':
@@ -179,7 +180,7 @@ def Array_Sort(CA, CA_Count, color):
         color='Y'
     else:
         pass
-    if (capitalize(CA[CA_Count]) == color) & (CA_Count < 5):
+    if ((CA[CA_Count].upper()) == color) & (CA_Count < 5):
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 200, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
@@ -189,6 +190,7 @@ def Array_Sort(CA, CA_Count, color):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 50, 200, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -201,6 +203,7 @@ def Array_Sort(CA, CA_Count, color):
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -209,7 +212,7 @@ def Array_Sort(CA, CA_Count, color):
     return CA_Count
 
 def Manual_Sort(count, color, man_color):
-    plc.write('Program:MainProgram.Block_Count', count)
+    PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
     print(color)
     print(man_color)
     print(count)
@@ -223,7 +226,7 @@ def Manual_Sort(count, color, man_color):
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 125, 175, 150, 50, isQueued = 1)#lifts straight up
         dType.dSleep(2000)
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
-        dType.dSleep(3000)
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -232,12 +235,14 @@ def Manual_Sort(count, color, man_color):
         else:
             pass
         count += 1
+        plc.write('Program:MainProgram.Block_Count', count)
     else:
         dType.SetQueuedCmdClear(api)
         dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 150, -250, 100, 50, isQueued = 1)#Goes over drop off location
         dType.dSleep(2000)
         dType.SetEndEffectorSuctionCup(api, 0, 0, isQueued = 1)#Suction off
         dType.SetPTPCmd(api, 0, 243.5, 1, 50, 50, isQueued = 1)#Goes back to home
+        dType.dSleep(3500)
         dType.SetQueuedCmdStartExec(api)
         if PLC_EStop[1] == 1:
             dType.SetQueuedCmdForceStopExec(api)
@@ -270,7 +275,6 @@ def PLC_Read():
             return PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed
 
 def Dob_Pick(x,y):
-    dType.SetQueuedCmdStartExec
     dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 250, y, 90, 50, isQueued = 1)
     dType.dSleep(1000)
     dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, x, y, 5, 50, isQueued = 1)
@@ -279,12 +283,13 @@ def Dob_Pick(x,y):
     dType.dSleep(1000)
     dType.SetPTPCmd(api, dType.PTPMode.PTPMOVLXYZMode, 250, 73, 100, 50, isQueued = 1)    # lifts straight up
     PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
-    if PLC_Stop[1] == 0:
-        dType.SetQueuedCmdStartExec(api)
+    dType.SetQueuedCmdStartExec(api)
+    if PLC_Stop[1] == 1:
+        dType.SetQueuedCmdStopExec(api)
     elif PLC_EStop[1] == 1:
         dType.SetQueuedCmdForceStopExec
     else:
-        dType.SetQueuedCmdStopExec(api)
+        pass
     BS = 1
     return BS
 
@@ -343,6 +348,7 @@ while True:
             Manual_Count = 0
             Chosen_Color = ''
             y1=90
+            array=[]
 
 ####################################################################################################################################
 #
@@ -354,7 +360,6 @@ while True:
                 print("System is Running.")
                 # Reread PLC Inputs for Updates
                 plc.write('Program:MainProgram.Block_Detected', 0)
-                PLC_Read()
                 PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
                 if PLC_EStop[1] == 1:
                     dType.SetQueuedCmdForceStopExec(api)
@@ -388,8 +393,13 @@ while True:
                         dType.SetEMotor(api, 1, 0, 0, isQueued = 0)
                     else:
                         dType.SetEMotor(api, 1, 1, -(vel), isQueued = 0)
-
-
+                    
+                    if PLC_Stop[1] == 1:
+                        dType.SetQueuedCmdStopExec
+                    elif PLC_EStop[1] == 1:
+                        dType.SetQueuedCmdForceStopExec
+                    else:
+                        pass
 
                     #Define Red Array
                     low_red = np.array([160,50,50])
@@ -490,16 +500,10 @@ while True:
                         print(x,y)
                         plc.write('Program:MainProgram.Block_Detected', 1)
                         PLC_SysRunning, PLC_Stop, PLC_EStop, PLC_Conveyor, PLC_Color,Sort_Color_Array,Sort_Random,Sort_Manual,Manual_Color,Sort_Same,Sort_Array,PLC_Conveyor_Speed = PLC_Read()
-                        if PLC_Conveyor[1] == 1:
-                            dType.SetEMotor(api, 1, 0, 0, isQueued = 0) 
-                        #Might not need conveyor dType Syntax
-                        dType.SetQueuedCmdClear(api)
                         if PLC_Conveyor[1] == 0:
                             dType.SetEMotor(api, 1, 0, 0, isQueued = 0) 
-                        ##dType.SetQueuedCmdStartExec(api)
 
-
-
+                        #### Conveyor Speed Decision for y coordinate
                         if 0 < vel <= 2264:
                             y1 = 90
                         elif 2264 < vel <= 4245:
@@ -588,7 +592,6 @@ while True:
                     plc.write('Program:MainProgram.Current_Sort', 'Manual Sort')
                     if Manual_Color[1] == 1:
                         Chosen_Color = 'Red'
-                        print("Manual--Red")
                     elif Manual_Color[1] == 2:
                         Chosen_Color = 'Green'
                     elif Manual_Color[1] == 3:
@@ -607,4 +610,3 @@ while True:
                 else:
                    plc.write('Program:MainProgram.Current_Sort', 'Random Sort')
                    Block_Count = Random_Sort(Block_Count)
-
