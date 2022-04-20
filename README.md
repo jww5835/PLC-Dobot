@@ -4,7 +4,7 @@
 - Dara Eisler
 - Bryce McClafferty
 
-Primary Advisor: Dr. Asare
+Primary Advisor: Dr. Asare-Yeboah
 
 Secondary: Dr. Cho
 
