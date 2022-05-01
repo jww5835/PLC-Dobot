@@ -31,6 +31,10 @@ This will allow the user to control the Dobot. This file should not be tampered 
 
 Here we will be describing what you will need to do to get this system up and running.
 
+## Disclaimer
+
+The Dobot API that runs through the dll files will only work on windows as they do not provide the libraries for Mac or Linux environments. There are solutions out there to combat this problem but we had a very hard time in a linux environment creating the .so files. 
+
 ## IDE Setup
 
 In this project we used Visual Studio on Windows 10. Although this is what we used you can use whatever IDE works for you. In Visual Studio you will have to pip install this set of Python libraries into this projects environment. 
