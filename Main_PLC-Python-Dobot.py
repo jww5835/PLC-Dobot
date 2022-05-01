@@ -4,17 +4,13 @@
 #
 ####################################################################################################################################
 
-from turtle import Turtle
 import pycomm3
 from pycomm3 import LogixDriver
 import cv2
 import numpy as np
-import math
-import threading
 import DobotDllType as dType
 import time
 from tracker import *
-import pandas as pd
 
 ####################################################################################################################################
 #
