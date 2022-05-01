@@ -59,7 +59,7 @@ https://docs.pycomm3.dev/en/latest/
 
 Physcially Setting up the system is super easy. The picture below will give a visual on how the system should look for the Dobot.
 
-![Dobot Setup](/images/Dobot%20Setup.png)
+![Dobot Setup](/images/Dobot Setup.png)
 
 ## Getting the System Started
 
