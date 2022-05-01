@@ -55,11 +55,19 @@ If you are using compact logix the current code will work. If you need other dri
 
 https://docs.pycomm3.dev/en/latest/
 
+## System Diagram 
+
+Follow this level 2 diagram to replicate our system:
+
+![Level 2](/Images/Level2.png)
+
 ## Setting up the Dobot Magician
 
 Physcially Setting up the system is super easy. The picture below will give a visual on how the system should look for the Dobot.
 
 ![Dobot Setup](/Images/Dobot_Setup.png)
+
+The motor of the conveyor belt should be placed away from the dobot on the right side. The conveyor box also provides a setter that will allow the Dobot to be set in the same position everytime. Once the Dobot is set up, the last thing youll have to do is set up the webcam. The webcam will be placed right next to the suction cup on the end of the robotic arm. This 3D printed arm was found online at ---. This will be mounted with whatever camera you have using --- notches of the ball and socket joints. These joints have been soldered together for permanent results.   
 
 ## Getting the System Started
 
