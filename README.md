@@ -71,4 +71,8 @@ The motor of the conveyor belt should be placed away from the dobot on the right
 
 ## Getting the System Started
 
+Once everything is wired up and set up, we can start the running process. Get the main python program running (Main_PLC-Python-Dobot.py) and the Dobot will home to calibrate itself and then stop. This is on a timer so nothing will happen for roughly 23 seconds. From here, everything can be ran from the HMI and PLC. The system is full functional and capable of being changed from there. 
+
 ## Calibrating the Camera
+
+## HMI Screens
