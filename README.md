@@ -43,7 +43,7 @@ After these have been installed the main file will work well with all imported l
 
 ## HMI & PLC Setup
 
-Compact Logix 5380 5069l306ERM is the specific controller that was used for this project. 
+Compact Logix 5380 5069-L306ERM is the specific controller that was used for this project. 
 
 Software for the PLC Code: Allen Bradley Rockwell Studio 5000
   - Exact file in the GitHub: Dobot_V1PLC.ACD
@@ -56,6 +56,10 @@ If you are using compact logix the current code will work. If you need other dri
 https://docs.pycomm3.dev/en/latest/
 
 ## Setting up the Dobot Magician
+
+Physcially Setting up the system is super easy. The picture below will give a visual on how the system should look for the Dobot.
+
+![Dobot Setup](/images/Dobot%20Setup.png)
 
 ## Getting the System Started
 
