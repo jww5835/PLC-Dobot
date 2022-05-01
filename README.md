@@ -43,9 +43,15 @@ After these have been installed the main file will work well with all imported l
 
 ## HMI & PLC Setup
 
-Compact Logix 5380 5069l306ERM, What software people need, 
+Compact Logix 5380 5069l306ERM is the specific controller that was used for this project. 
 
-If you are using compact logix the current code will work. If you need other driveers for different Allen Bradley PLCs please check the Pycomm3 Documentation linked below:
+Software for the PLC Code: Allen Bradley Rockwell Studio 5000
+  - Exact file in the GitHub: Dobot_V1PLC.ACD
+
+Software used to create the HMI: Studio 5000 View Designer
+  - Exact file in the GitHub: DobotPLC_HMI_V1.vpd
+
+If you are using compact logix the current code will work. If you need other drivers for different Allen Bradley PLCs please check the Pycomm3 Documentation linked below:
 
 https://docs.pycomm3.dev/en/latest/
 
