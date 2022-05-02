@@ -81,7 +81,7 @@ Once everything is wired up and set up, we can start the running process. Get th
 
 Depending on the type of camera you have and what its showing the coordinates will have to change within the code. This is a trial and error approach and will be up and working in no time. 
 
-##### Calibration @25 mm/s Conveyor Speed
+#### Calibration @25 mm/s Conveyor Speed
 
 When trouble shooting we are assuming you are looking at the system straight on as in the photo
 
