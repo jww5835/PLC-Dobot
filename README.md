@@ -81,15 +81,17 @@ Once everything is wired up and set up, we can start the running process. Get th
 
 Depending on the type of camera you have and what its showing the coordinates will have to change within the code. This is a trial and error approach and will be up and working in no time. 
 
-###### Left and Right Calibration @25 mm/s Conveyor Speed
+###### Calibration @25 mm/s Conveyor Speed
 
-1. Try each block at different areas of the conveyor belt and see how well or not well it picks the blocks up.
-2. If all are off change the number on line 539 accordingly 
-3. If needs to travel up the conveyor add otherwise subtracted until hits in the center of the block
-4. If only yellows are missing change number in line 538
-5. If blocks are being missed when extending out evaluate which area it pertains to
-6. The (x,y) coordinates are going to be printing find the corresponding if and elif statements and adjust the denominator in that area only
-7. If over extending increase size of denominator; under extending decrease
-8. Run until satisfied
+When trouble shooting we are assuming you are looking at the system straight on as in the photo
+
+1. Try each block at different areas of the conveyor belt to check if the blocks are being picked up accurately or not
+  - If the Dobot is to the left or right of the block, change line 539 accordingly 
+    - If the suction cup is to the left add, else subtract
+  - If only yellows are missing change number in line 538
+2. If blocks are being missed when extending out evaluate which area it pertains to
+  - The (x,y) coordinates are going to be printing. Find the corresponding if and elif statements and adjust the denominator in that area only
+  - If over extending increase size of denominator, if under extending decrease denominator
+3. Repeat until its accurate
 
 ## HMI Screens
