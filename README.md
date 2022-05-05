@@ -101,19 +101,19 @@ The first screen that you will see when the system first starts is the Home Scre
 1. System Settings: Configuration of the total system settings (Start/Stop/EStop) and varying conveyor speeds (0-60mm/sec)
   - The image for this screen is found in the Images folder or using this: 
  
-![System Settings](/Images/'Systems Settings'.PNG)
+![System Settings](/Images/Systems_Settings.PNG)
 
 2. Sorting Settings: This is where the user can pick whatever sorting method they would like to be executed.
 
-![Sorting Settings](/Images/'Sorting Settings (2)'.PNG) 
+![Sorting Settings](/Images/Sorting_Settings.PNG) 
 
 3. Color Settings: This corresponds with the Manual Sorting method, where the user can choose a specific color 
 
-![Color Settings](/Images/'Color Settings'.PNG)
+![Color Settings](/Images/Color_Settings.PNG)
 
 4. System Monitor: This screen allows the user to monitor the current sorting method, the current count of that sorting method, and the current color is being detected.
 
-![Systems Monitor](/Images/'Systems Monitor'.png)
+![Systems Monitor](/Images/Systems_Monitor.png)
 
 5. There are two pop up screens: 
   -Array Pop-up: This appears when you select the array sort button on the Sorting Settings screen. The user will be able to select colors using the letters R,G,B,and Y. 
