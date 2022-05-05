@@ -25,7 +25,7 @@ This will allow the user to track objects on conveyor belt. This file should not
 
 ###### DOBOT API (DobotDllType.py)
 
-This will allow the user to control the Dobot. This file should not be tampered with as this is directly from the manufacturer.
+This will allow the user to control the Dobot. This file should not be tampered with as this is directly from the manufacturer. Included alonside this are the dll files for windows use that allow the Doboto API to work
 
 # Manual
 
