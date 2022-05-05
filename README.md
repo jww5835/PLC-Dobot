@@ -95,3 +95,20 @@ When trouble shooting we are assuming you are looking at the system straight on 
 3. Repeat until its accurate
 
 ## HMI Screens
+
+The first screen that you will see when the system first starts is the Home Screen. From the Home Screen, you will be able to choose four other screens, System Settings, Color Settings, Sorting Settings, and System Monitor. 
+1. System Settings: Configuration of the total system settings (Start/Stop/EStop) and varying conveyor speeds (0-60mm/sec)
+  - The image for this screen is found in the Images folder or using this: ![System Settings](/Images/Systems Settings.png)
+2. Sorting Settings: This is where the user can pick whatever sorting method they would like to be executed.
+  - Image: ![Sorting Settings](/Images/Sorting Settings (2).png) 
+3. Color Settings: This corresponds with the Manual Sorting method, where the user can choose a specific color 
+  - Image: ![Color Settings](/Images/Color_Settings.png)
+4. System Monitor: This screen allows the user to monitor the current sorting method, the current count of that sorting method, and the current color is being detected.
+  - Image: ![Systems Monitor](/Images/Systems_Monitor.png)
+5. There are two pop up screens: 
+  -Array Pop-up: This appears when you select the array sort button on the Sorting Settings screen. The user will be able to select colors using the letters R,G,B,and Y. 
+      -Y - Yellow
+      -G - Green
+      -B - Blue
+      -R - Red
+  -Alarm Bell Pop-up: When the alarm bell for the max count turns red, the user can press on the bell. The pop-up screen appears and a Reset count button is able to be pressed.
