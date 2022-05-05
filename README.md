@@ -101,7 +101,7 @@ The first screen that you will see when the system first starts is the Home Scre
 1. System Settings: Configuration of the total system settings (Start/Stop/EStop) and varying conveyor speeds (0-60mm/sec)
   - The image for this screen is found in the Images folder or using this: 
  
-![System Settings](/Images/Systems_Settings.PNG)
+![System Settings](/Images/System_Settings.PNG)
 
 2. Sorting Settings: This is where the user can pick whatever sorting method they would like to be executed.
 
